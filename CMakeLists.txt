@@ -1,32 +1,61 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(hrl_kinematics)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
+set(PACKAGE_DEPENDENCIES
+  roscpp
+  kdl_parser
+  tf_conversions
+  geometric_shapes
+  sensor_msgs
+  robot_state_publisher
+  visualization_msgs
+  pcl_ros
+  pcl_conversions
+  urdf
+)  
+  
 
-rosbuild_init()
+find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPENDENCIES})
+
+find_package(PCL REQUIRED QUIET COMPONENTS common)
+
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${PCL_COMMON_INCLUDE_DIRS}
+)
+
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS ${PACKAGE_DEPENDENCIES}
+  DEPENDS PCL
+)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-#uncomment if you have defined messages
-#rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
+add_library(${PROJECT_NAME} src/TestStability.cpp src/Kinematics.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
-#common commands for building c++ executables and libraries
-rosbuild_add_library(${PROJECT_NAME} src/TestStability.cpp src/Kinematics.cpp)
-
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-
-rosbuild_add_executable(test_stability src/test_stability.cpp)
+add_executable(test_stability src/test_stability.cpp)
 target_link_libraries(test_stability ${PROJECT_NAME})
+
+
+
+# install targets:
+install(TARGETS ${PROJECT_NAME}
+  test_stability
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+  PATTERN ".svn" EXCLUDE
+)

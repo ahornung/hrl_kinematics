@@ -1,0 +1,41 @@
+<package>
+  <name>hrl_kinematics</name>
+  <version>0.1.0</version>
+  <description>
+     A small kinematics library for humanoid robots based on KDL. The main components are (recursive) center of mass, (static) stability, and support polygon computations.
+  </description>
+  <author>Armin Hornung</author>
+  <maintainer email="hornunga@cs.informatik.uni-freiburg.de">Armin Hornung</maintainer>
+  <license>BSD</license>
+  
+  <url>http://ros.org/wiki/hrl_kinematics</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>kdl_parser</build_depend>
+  <build_depend>tf_conversions</build_depend>
+  <build_depend>geometric_shapes</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>robot_state_publisher</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>pcl_ros</build_depend>
+  <build_depend>pcl_conversions</build_depend>
+  <build_depend>urdf</build_depend>
+  <build_depend>assimp</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>kdl_parser</run_depend>
+  <run_depend>tf_conversions</run_depend>
+  <run_depend>geometric_shapes</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>visualization_msgs</run_depend>
+  <run_depend>pcl_ros</run_depend>
+  <run_depend>pcl_conversions</run_depend>
+  <run_depend>urdf</run_depend>
+  <run_depend>assimp</run_depend>
+
+</package>
+
+
