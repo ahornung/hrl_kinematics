@@ -1,6 +1,3 @@
-// SVN $HeadURL$
-// SVN $Id$
-
 /*
  * hrl_kinematics - a kinematics library for humanoid robots based on KDL
  *
@@ -166,12 +163,7 @@ std::vector<tf::Point> TestStability::convexHull(const std::vector<tf::Point>& p
     pcl_points->points.push_back(pcl::PointXYZ(points[i].x(), points[i].y(), 0.0));
   }
 
-#if ROS_VERSION_MINIMUM(1,8,0) // test for Fuerte (newer PCL)
   chull.setDimension(2);
-#else
-
-#endif
-
   chull.setInputCloud(pcl_points);
   std::vector<pcl::Vertices> polygons;
   chull.reconstruct(chull_points, polygons);
@@ -269,15 +261,9 @@ bool TestStability::loadFootPolygon(){
   } else {
     shared_ptr<const urdf::Mesh> mesh = boost::dynamic_pointer_cast<const urdf::Mesh>(geom);
 
-    //// arm_navigation (Fuerte / Groovy)
-   tf::Vector3 scale(mesh->scale.x, mesh->scale.y, mesh->scale.z);
-   shapes::Mesh* shape_mesh = shapes::createMeshFromFilename(mesh->filename, &scale);
-   size_t vertex_count = shape_mesh->vertexCount;
-
-    //// MoveIt:
-//     const Eigen::Vector3d scale(mesh->scale.x, mesh->scale.y, mesh->scale.z);
-//     shapes::Mesh* shape_mesh = shapes::createMeshFromResource(mesh->filename, scale);
-//     size_t vertex_count = shape_mesh->vertex_count;
+    const Eigen::Vector3d scale(mesh->scale.x, mesh->scale.y, mesh->scale.z);
+    shapes::Mesh* shape_mesh = shapes::createMeshFromResource(mesh->filename, scale);
+    size_t vertex_count = shape_mesh->vertex_count;
 
     //Vector storing the original foot points
     std::vector<tf::Point> foot_SP_right;

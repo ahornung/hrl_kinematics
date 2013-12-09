@@ -1,6 +1,3 @@
-// SVN $HeadURL$
-// SVN $Id$
-
 /*
  * hrl_kinematics - a kinematics library for humanoid robots based on KDL
  *
