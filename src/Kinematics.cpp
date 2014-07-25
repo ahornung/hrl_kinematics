@@ -37,7 +37,7 @@ namespace hrl_kinematics {
 
 Kinematics::Kinematics()
 : nh_(), nh_private_ ("~"),
-  root_link_name_("base_link"), rfoot_link_name_("r_sole"),  lfoot_link_name_("l_sole")
+  root_link_name_("BODY"), rfoot_link_name_("RLEG_LINK5"),  lfoot_link_name_("LLEG_LINK5")
 {
   // Get URDF XML
   std::string urdf_xml, full_urdf_xml;

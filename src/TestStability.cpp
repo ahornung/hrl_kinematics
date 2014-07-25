@@ -39,7 +39,7 @@ using boost::shared_ptr;
 namespace hrl_kinematics {
 
 TestStability::TestStability()
-: Kinematics(), rfoot_mesh_link_name("RAnkleRoll_link")
+: Kinematics(), rfoot_mesh_link_name("RLEG_LINK5")
 {
   //Build support polygon with default scale 1.0
   initFootPolygon(1.0);
