@@ -35,10 +35,25 @@ using robot_state_publisher::SegmentPair;
 
 namespace hrl_kinematics {
 
+Kinematics::Kinematics(const std::string _root_link_name_, const std::string _rfoot_link_name_, const std::string _lfoot_link_name_)
+: nh_(), nh_private_ ("~"),
+  root_link_name_(_root_link_name_), rfoot_link_name_(_rfoot_link_name_),  lfoot_link_name_(_lfoot_link_name_)
+{
+    initialize();
+}
+
 Kinematics::Kinematics()
 : nh_(), nh_private_ ("~"),
   root_link_name_("base_link"), rfoot_link_name_("r_sole"),  lfoot_link_name_("l_sole")
 {
+  initialize();
+}
+
+Kinematics::~Kinematics() {
+
+}
+
+void Kinematics::initialize() {
   // Get URDF XML
   std::string urdf_xml, full_urdf_xml;
   nh_private_.param("robot_description_name",urdf_xml,std::string("robot_description"));
@@ -57,11 +72,6 @@ Kinematics::Kinematics()
     throw Kinematics::InitFailed("Could not load models!");
 
   ROS_INFO("Kinematics initialized");
-
-}
-
-Kinematics::~Kinematics() {
-
 }
 
 bool Kinematics::loadModel(const std::string xml) {

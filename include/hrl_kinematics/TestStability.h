@@ -51,6 +51,7 @@ namespace hrl_kinematics {
 class TestStability : public Kinematics{
 public:
   TestStability();
+  TestStability(const std::string _root_link_name_, const std::string _rfoot_link_name_, const std::string _lfoot_link_name_, const std::string _rfoot_mesh_link_name_);
   virtual ~TestStability();
 
   /**
