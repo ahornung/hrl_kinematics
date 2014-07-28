@@ -42,8 +42,8 @@ namespace hrl_kinematics {
  */
 class TestStabilityNode {
 public:
-  TestStabilityNode(Kinematics::FootSupport support, TestStability _test_stability_, ros::NodeHandle _nh_);
   TestStabilityNode(Kinematics::FootSupport support = Kinematics::SUPPORT_DOUBLE);
+  TestStabilityNode(ros::NodeHandle _nh_, TestStability _test_stability_, Kinematics::FootSupport support);
   virtual ~TestStabilityNode();
   void initialize();
   void jointStateCb(const sensor_msgs::JointStateConstPtr& state);
@@ -56,8 +56,8 @@ protected:
   Kinematics::FootSupport support_mode_;
 };
 
-TestStabilityNode::TestStabilityNode(Kinematics::FootSupport support, TestStability _test_stability_, ros::NodeHandle _nh_)
-: support_mode_ (support), test_stability_ (_test_stability_), nh_(_nh_)
+TestStabilityNode::TestStabilityNode(ros::NodeHandle _nh_, TestStability _test_stability_, Kinematics::FootSupport support)
+  : nh_(_nh_), test_stability_(_test_stability_), support_mode_ (support)
 {
   initialize();
 }
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
       rfoot_mesh_link_name_ = "RAnkleRoll_link";
 
     hrl_kinematics::TestStability test_stability_(root_link_name_, rfoot_link_name_, lfoot_link_name_, rfoot_mesh_link_name_);
-    hrl_kinematics::TestStabilityNode StabilityNode(support, test_stability_, nh_);
+    hrl_kinematics::TestStabilityNode StabilityNode(nh_, test_stability_, support);
     // hrl_kinematics::TestStabilityNode StabilityNode(support);
 
     ros::spin();

@@ -72,7 +72,7 @@ public:
     : std::runtime_error(what) {}
   };
 
-  Kinematics(const std::string _root_link_name_, const std::string _rfoot_link_name_, const std::string _lfoot_link_name_);
+  Kinematics(std::string _root_link_name_, std::string _rfoot_link_name_, std::string _lfoot_link_name_);
   Kinematics();
   virtual ~Kinematics();
   void initialize();

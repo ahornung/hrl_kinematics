@@ -35,7 +35,7 @@ using robot_state_publisher::SegmentPair;
 
 namespace hrl_kinematics {
 
-Kinematics::Kinematics(const std::string _root_link_name_, const std::string _rfoot_link_name_, const std::string _lfoot_link_name_)
+Kinematics::Kinematics(std::string _root_link_name_, std::string _rfoot_link_name_, std::string _lfoot_link_name_)
 : nh_(), nh_private_ ("~"),
   root_link_name_(_root_link_name_), rfoot_link_name_(_rfoot_link_name_),  lfoot_link_name_(_lfoot_link_name_)
 {

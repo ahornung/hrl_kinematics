@@ -38,7 +38,7 @@ using boost::shared_ptr;
 
 namespace hrl_kinematics {
 
-TestStability::TestStability(const std::string _root_link_name_, const std::string _rfoot_link_name_, const std::string _lfoot_link_name_, const std::string _rfoot_mesh_link_name_)
+TestStability::TestStability(std::string _root_link_name_, std::string _rfoot_link_name_, std::string _lfoot_link_name_, std::string _rfoot_mesh_link_name_)
 : Kinematics(_root_link_name_, _rfoot_link_name_, _lfoot_link_name_), rfoot_mesh_link_name(_rfoot_mesh_link_name_)
 {
   //Build support polygon with default scale 1.0
