@@ -72,8 +72,10 @@ public:
     : std::runtime_error(what) {}
   };
 
+  Kinematics(std::string _root_link_name_, std::string _rfoot_link_name_, std::string _lfoot_link_name_);
   Kinematics();
   virtual ~Kinematics();
+  void initialize();
 
   /**
    * Computes the center of mass of the given robot structure and joint configuration.
