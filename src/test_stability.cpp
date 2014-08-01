@@ -55,7 +55,7 @@ protected:
 };
 
 TestStabilityNode::TestStabilityNode(Kinematics::FootSupport support)
-: support_mode_ (support)
+: support_mode_(support)
 {
   ros::NodeHandle nh_private("~");
   visualization_pub_ = nh_private.advertise<visualization_msgs::MarkerArray>("stability_visualization", 1);

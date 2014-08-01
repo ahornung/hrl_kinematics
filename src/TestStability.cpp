@@ -38,8 +38,8 @@ using boost::shared_ptr;
 
 namespace hrl_kinematics {
 
-TestStability::TestStability()
-: Kinematics(), rfoot_mesh_link_name("RLEG_LINK5")
+TestStability::TestStability(const boost::shared_ptr<const urdf::ModelInterface>& urdf_model)
+: Kinematics(urdf_model), rfoot_mesh_link_name("RLEG_LINK5")
 {
   //Build support polygon with default scale 1.0
   initFootPolygon(1.0);
@@ -237,7 +237,7 @@ void TestStability::initFootPolygon(double scale_convex_hull){
 
 
 bool TestStability::loadFootPolygon(){
-  boost::shared_ptr<const urdf::Link> foot_link =  urdf_model_.getLink(rfoot_mesh_link_name);
+  boost::shared_ptr<const urdf::Link> foot_link =  urdf_model_->getLink(rfoot_mesh_link_name);
   assert(foot_link);
   boost::shared_ptr<const urdf::Geometry> geom;
   urdf::Pose geom_pose;

@@ -50,7 +50,7 @@ namespace hrl_kinematics {
    */
 class TestStability : public Kinematics{
 public:
-  TestStability();
+  TestStability(const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>());
   virtual ~TestStability();
 
   /**

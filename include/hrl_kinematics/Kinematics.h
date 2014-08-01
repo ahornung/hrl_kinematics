@@ -72,7 +72,7 @@ public:
     : std::runtime_error(what) {}
   };
 
-  Kinematics();
+  Kinematics(const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>());
   virtual ~Kinematics();
 
   /**
@@ -90,13 +90,14 @@ public:
 
 
   protected:
-  bool loadModel(const std::string xml);
+  bool loadKDLModel();
   void addChildren(const KDL::SegmentMap::const_iterator segment);
 
   void computeCOMRecurs(const KDL::SegmentMap::const_iterator& currentSeg, const std::map<std::string, double>& joint_positions,
                         const KDL::Frame& tf, KDL::Frame& tf_right_foot, KDL::Frame& tf_left_foot, double& m, KDL::Vector& cog);
   void createCoGMarker(const std::string& ns, const std::string& frame_id, double radius, const KDL::Vector& cog, visualization_msgs::Marker& marker) const;
-  urdf::Model urdf_model_;
+
+  boost::shared_ptr<const urdf::ModelInterface> urdf_model_;
   KDL::Tree kdl_tree_;
   KDL::Chain kdl_chain_right_;
   KDL::Chain kdl_chain_left_;
