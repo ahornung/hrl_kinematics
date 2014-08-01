@@ -323,7 +323,7 @@ bool TestStability::loadFootPolygon(){
 
   }
 
-  ROS_INFO("Foot polygon loaded with %zu points", foot_support_polygon_right_.size());
+  ROS_DEBUG("Foot polygon loaded with %zu points", foot_support_polygon_right_.size());
 
   return true;
 
