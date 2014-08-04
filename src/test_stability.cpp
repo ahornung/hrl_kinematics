@@ -43,7 +43,9 @@ namespace hrl_kinematics {
 class TestStabilityNode {
 public:
   TestStabilityNode(Kinematics::FootSupport support = Kinematics::SUPPORT_DOUBLE);
+  TestStabilityNode(ros::NodeHandle _nh_, TestStability _test_stability_, Kinematics::FootSupport support);
   virtual ~TestStabilityNode();
+  void initialize();
   void jointStateCb(const sensor_msgs::JointStateConstPtr& state);
 
 protected:
@@ -54,8 +56,23 @@ protected:
   Kinematics::FootSupport support_mode_;
 };
 
+TestStabilityNode::TestStabilityNode(ros::NodeHandle _nh_, TestStability _test_stability_, Kinematics::FootSupport support)
+  : nh_(_nh_), test_stability_(_test_stability_), support_mode_ (support)
+{
+  initialize();
+}
+
 TestStabilityNode::TestStabilityNode(Kinematics::FootSupport support)
 : support_mode_(support)
+{
+  initialize();
+}
+
+TestStabilityNode::~TestStabilityNode(){
+
+}
+
+void TestStabilityNode::initialize()
 {
   ros::NodeHandle nh_private("~");
   visualization_pub_ = nh_private.advertise<visualization_msgs::MarkerArray>("stability_visualization", 1);
@@ -64,11 +81,6 @@ TestStabilityNode::TestStabilityNode(Kinematics::FootSupport support)
 
   joint_state_sub_ = nh_.subscribe("joint_states", 1, &TestStabilityNode::jointStateCb, this);
 }
-
-TestStabilityNode::~TestStabilityNode(){
-
-}
-
 
 void TestStabilityNode::jointStateCb(const sensor_msgs::JointStateConstPtr& state){
   size_t num_joints = state->position.size();
@@ -135,7 +147,21 @@ int main(int argc, char** argv)
   try
   {
     ros::spinOnce();
-    hrl_kinematics::TestStabilityNode StabilityNode(support);
+
+    ros::NodeHandle nh_;
+    std::string root_link_name_, rfoot_link_name_, lfoot_link_name_, rfoot_mesh_link_name_;
+    if (!nh_.getParam("test_stability/root_link_name", root_link_name_))
+      root_link_name_ = "base_link";
+    if (!nh_.getParam("test_stability/rfoot_link_name", rfoot_link_name_))
+      rfoot_link_name_ = "r_sole";
+    if (!nh_.getParam("test_stability/lfoot_link_name", lfoot_link_name_))
+      lfoot_link_name_ = "l_sole";
+    if (!nh_.getParam("test_stability/rfoot_mesh_link_name", rfoot_mesh_link_name_))
+      rfoot_mesh_link_name_ = "RAnkleRoll_link";
+
+    hrl_kinematics::TestStability test_stability_(root_link_name_, rfoot_link_name_, lfoot_link_name_, rfoot_mesh_link_name_);
+    hrl_kinematics::TestStabilityNode StabilityNode(nh_, test_stability_, support);
+    // hrl_kinematics::TestStabilityNode StabilityNode(support);
 
     ros::spin();
   }

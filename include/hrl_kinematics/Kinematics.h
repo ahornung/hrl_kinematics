@@ -72,8 +72,18 @@ public:
     : std::runtime_error(what) {}
   };
 
-  Kinematics(const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>());
+  /**
+   * \brief Constructor
+   * \param root_link_name - name of link that is base of robot
+   * \param rfoot_link_name - name of link that is considered the right foot
+   * \param lfoot_link_name - name of link that is considered the left foot
+   * \param urdf_model - a pointer to a pre-loaded URDF model that can speed up initialization if provided
+   */
+  Kinematics(std::string root_link_name = "base_link", std::string rfoot_link_name = "r_sole", std::string lfoot_link_name = "l_sole",
+             const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>());
+
   virtual ~Kinematics();
+  void initialize();
 
   /**
    * Computes the center of mass of the given robot structure and joint configuration.

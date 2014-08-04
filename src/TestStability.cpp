@@ -38,8 +38,11 @@ using boost::shared_ptr;
 
 namespace hrl_kinematics {
 
-TestStability::TestStability(const boost::shared_ptr<const urdf::ModelInterface>& urdf_model)
-: Kinematics(urdf_model), rfoot_mesh_link_name("RLEG_LINK5")
+TestStability::TestStability(std::string rfoot_mesh_link_name, 
+                             std::string root_link_name, std::string rfoot_link_name, std::string lfoot_link_name, 
+                             const boost::shared_ptr<const urdf::ModelInterface>& urdf_model)
+  : Kinematics(root_link_name, rfoot_link_name, lfoot_link_name, urdf_model)
+  , rfoot_mesh_link_name_(rfoot_mesh_link_name)
 {
   //Build support polygon with default scale 1.0
   initFootPolygon(1.0);
@@ -237,7 +240,7 @@ void TestStability::initFootPolygon(double scale_convex_hull){
 
 
 bool TestStability::loadFootPolygon(){
-  boost::shared_ptr<const urdf::Link> foot_link =  urdf_model_->getLink(rfoot_mesh_link_name);
+  boost::shared_ptr<const urdf::Link> foot_link =  urdf_model_->getLink(rfoot_mesh_link_name_);
   assert(foot_link);
   boost::shared_ptr<const urdf::Geometry> geom;
   urdf::Pose geom_pose;
@@ -248,7 +251,7 @@ bool TestStability::loadFootPolygon(){
     geom = foot_link->visual->geometry;
     geom_pose = foot_link->visual->origin;
   } else{
-    ROS_ERROR_STREAM("No geometry for link "<< rfoot_mesh_link_name << " available");
+    ROS_ERROR_STREAM("No geometry for link "<< rfoot_mesh_link_name_ << " available");
     return false;
   }
 
@@ -256,7 +259,7 @@ bool TestStability::loadFootPolygon(){
                                               tf::Vector3(geom_pose.position.x, geom_pose.position.y, geom_pose.position.z)));
 
   if (geom->type != urdf::Geometry::MESH){
-    ROS_ERROR_STREAM("Geometry for link "<< rfoot_mesh_link_name << " is not a mesh");
+    ROS_ERROR_STREAM("Geometry for link "<< rfoot_mesh_link_name_ << " is not a mesh");
     return false;
   } else {
     shared_ptr<const urdf::Mesh> mesh = boost::dynamic_pointer_cast<const urdf::Mesh>(geom);

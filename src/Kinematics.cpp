@@ -35,17 +35,23 @@ using robot_state_publisher::SegmentPair;
 
 namespace hrl_kinematics {
 
-Kinematics::Kinematics(const boost::shared_ptr<const urdf::ModelInterface>& urdf_model)
-: nh_(), nh_private_ ("~"),
-  root_link_name_("BODY"), rfoot_link_name_("RLEG_LINK5"),  lfoot_link_name_("LLEG_LINK5")
+Kinematics::Kinematics(std::string root_link_name, std::string rfoot_link_name, std::string lfoot_link_name,
+                       const boost::shared_ptr<const urdf::ModelInterface>& urdf_model)
+  : root_link_name_(root_link_name), rfoot_link_name_(rfoot_link_name),  lfoot_link_name_(lfoot_link_name),
+    nh_(), nh_private_ ("~"),
+    urdf_model_(urdf_model)
 {
-  // Load from passed in urdf model if possible
-  if (urdf_model != NULL)
-  {
-    // Save for future use
-    urdf_model_ = urdf_model;
-  } 
-  else // load from param server
+    initialize();
+}
+
+Kinematics::~Kinematics() {
+
+}
+
+void Kinematics::initialize() 
+{
+  // Load from param server if no urdf model passed in
+  if (urdf_model_ == NULL)
   {
     // Get URDF XML
     std::string urdf_xml, full_urdf_xml;
@@ -75,10 +81,6 @@ Kinematics::Kinematics(const boost::shared_ptr<const urdf::ModelInterface>& urdf
     throw Kinematics::InitFailed("Could not load KDL model!");
 
   ROS_INFO("Kinematics initialized");
-}
-
-Kinematics::~Kinematics() {
-
 }
 
 bool Kinematics::loadKDLModel() 

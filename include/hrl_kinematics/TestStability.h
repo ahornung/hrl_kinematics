@@ -50,7 +50,19 @@ namespace hrl_kinematics {
    */
 class TestStability : public Kinematics{
 public:
-  TestStability(const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>());
+
+  /**
+   * \brief Constructor
+   * \param rfoot_mesh_link_name - the model mesh used for displaying the foot polygon for both feet
+   * \param root_link_name - name of link that is base of robot
+   * \param rfoot_link_name - name of link that is considered the right foot
+   * \param lfoot_link_name - name of link that is considered the left foot
+   * \param urdf_model - a pointer to a pre-loaded URDF model that can speed up initialization if provided
+   */
+  TestStability(std::string rfoot_mesh_link_name = "RAnkleRoll_link", 
+                std::string root_link_name = "base_link", std::string rfoot_link_name = "r_sole", std::string lfoot_link_name = "l_sole",
+                const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>());
+
   virtual ~TestStability();
 
   /**
@@ -97,11 +109,15 @@ protected:
   tf::Point p_com_;
   std::vector<tf::Point> support_polygon_;
   tf::Transform tf_to_support_;
-  std::string rfoot_mesh_link_name;
+  std::string rfoot_mesh_link_name_;
 
   //Convex Hull scaling factor
   double scale_convex_hull_;
 };
+
+// Create boost pointers for this class
+typedef boost::shared_ptr<TestStability> TestStabilityPtr;
+typedef boost::shared_ptr<const TestStability> TestStabilityConstPtr;
 
 } /* namespace hrl_kinematics */
 #endif
