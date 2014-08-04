@@ -63,7 +63,7 @@ TestStabilityNode::TestStabilityNode(ros::NodeHandle _nh_, TestStability _test_s
 }
 
 TestStabilityNode::TestStabilityNode(Kinematics::FootSupport support)
-: support_mode_ (support)
+: support_mode_(support)
 {
   initialize();
 }

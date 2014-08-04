@@ -35,54 +35,58 @@ using robot_state_publisher::SegmentPair;
 
 namespace hrl_kinematics {
 
-Kinematics::Kinematics(std::string _root_link_name_, std::string _rfoot_link_name_, std::string _lfoot_link_name_)
-: nh_(), nh_private_ ("~"),
-  root_link_name_(_root_link_name_), rfoot_link_name_(_rfoot_link_name_),  lfoot_link_name_(_lfoot_link_name_)
+Kinematics::Kinematics(std::string root_link_name, std::string rfoot_link_name, std::string lfoot_link_name,
+                       const boost::shared_ptr<const urdf::ModelInterface>& urdf_model)
+  : root_link_name_(root_link_name), rfoot_link_name_(rfoot_link_name),  lfoot_link_name_(lfoot_link_name),
+    nh_(), nh_private_ ("~"),
+    urdf_model_(urdf_model)
 {
     initialize();
-}
-
-Kinematics::Kinematics()
-: nh_(), nh_private_ ("~"),
-  root_link_name_("base_link"), rfoot_link_name_("r_sole"),  lfoot_link_name_("l_sole")
-{
-  initialize();
 }
 
 Kinematics::~Kinematics() {
 
 }
 
-void Kinematics::initialize() {
-  // Get URDF XML
-  std::string urdf_xml, full_urdf_xml;
-  nh_private_.param("robot_description_name",urdf_xml,std::string("robot_description"));
-  nh_.searchParam(urdf_xml,full_urdf_xml);
+void Kinematics::initialize() 
+{
+  // Load from param server if no urdf model passed in
+  if (urdf_model_ == NULL)
+  {
+    // Get URDF XML
+    std::string urdf_xml, full_urdf_xml;
+    nh_private_.param("robot_description_name",urdf_xml,std::string("robot_description"));
+    nh_.searchParam(urdf_xml,full_urdf_xml);
 
-  ROS_DEBUG("Reading xml file from parameter server");
-  std::string result;
+    ROS_DEBUG("Reading xml file from parameter server");
 
+    std::string urdf_string;
 
-  if (!nh_.getParam(full_urdf_xml, result))
-    throw Kinematics::InitFailed("Could not load the xml from parameter server: " + urdf_xml);
+    if (!nh_.getParam(full_urdf_xml, urdf_string))
+      throw Kinematics::InitFailed("Could not load the xml from parameter server: " + urdf_xml);
 
+    boost::shared_ptr<urdf::Model> model;
+    model.reset(new urdf::Model());
+
+    if (!model->initString(urdf_string)) 
+    {
+      throw Kinematics::InitFailed("Could not initialize robot model");
+    }
+
+    urdf_model_ = model;
+  }
 
   // Load and Read Models
-  if (!loadModel(result))
-    throw Kinematics::InitFailed("Could not load models!");
+  if (!loadKDLModel())
+    throw Kinematics::InitFailed("Could not load KDL model!");
 
   ROS_INFO("Kinematics initialized");
 }
 
-bool Kinematics::loadModel(const std::string xml) {
+bool Kinematics::loadKDLModel() 
+{
 
-  if (!urdf_model_.initString(xml)) {
-    ROS_FATAL("Could not initialize robot model");
-    return -1;
-  }
-
-
-  if (!kdl_parser::treeFromUrdfModel(urdf_model_, kdl_tree_)) {
+  if (!kdl_parser::treeFromUrdfModel(*urdf_model_, kdl_tree_)) {
     ROS_ERROR("Could not initialize tree object");
     return false;
   }
@@ -215,8 +219,8 @@ void Kinematics::computeCOM(const std::map<std::string, double>& joint_positions
   ROS_DEBUG("Total mass: %f CoG: (%f %f %f)", mass, com.x(), com.y(), com.z());
 
   COM.setValue(com.x(), com.y(), com.z());
-  tf::TransformKDLToTF(right_foot_tf, tf_right_foot);
-  tf::TransformKDLToTF(left_foot_tf, tf_left_foot);
+  tf::transformKDLToTF(right_foot_tf, tf_right_foot);
+  tf::transformKDLToTF(left_foot_tf, tf_left_foot);
 }
 
 
