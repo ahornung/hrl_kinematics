@@ -58,10 +58,12 @@ public:
    * \param rfoot_link_name - name of link that is considered the right foot
    * \param lfoot_link_name - name of link that is considered the left foot
    * \param urdf_model - a pointer to a pre-loaded URDF model that can speed up initialization if provided
+   * \param foot_polygon_scale - default 1.0 - determines the safety margin of the foot support polygon
    */
   TestStability(std::string rfoot_mesh_link_name = "RAnkleRoll_link", 
                 std::string root_link_name = "base_link", std::string rfoot_link_name = "r_sole", std::string lfoot_link_name = "l_sole",
-                const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>());
+                const boost::shared_ptr<const urdf::ModelInterface>& urdf_model = boost::shared_ptr<const urdf::ModelInterface>(),
+                double foot_polygon_scale = 1.0);
 
   virtual ~TestStability();
 
@@ -112,7 +114,7 @@ protected:
   std::string rfoot_mesh_link_name_;
 
   //Convex Hull scaling factor
-  double scale_convex_hull_;
+  double foot_polygon_scale_;
 };
 
 // Create boost pointers for this class

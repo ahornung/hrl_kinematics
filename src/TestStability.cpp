@@ -40,12 +40,13 @@ namespace hrl_kinematics {
 
 TestStability::TestStability(std::string rfoot_mesh_link_name, 
                              std::string root_link_name, std::string rfoot_link_name, std::string lfoot_link_name, 
-                             const boost::shared_ptr<const urdf::ModelInterface>& urdf_model)
+                             const boost::shared_ptr<const urdf::ModelInterface>& urdf_model,
+                             double foot_polygon_scale)
   : Kinematics(root_link_name, rfoot_link_name, lfoot_link_name, urdf_model)
   , rfoot_mesh_link_name_(rfoot_mesh_link_name)
 {
-  //Build support polygon with default scale 1.0
-  initFootPolygon(1.0);
+  //Build support polygon
+  initFootPolygon(foot_polygon_scale);
 }
 
 TestStability::~TestStability() {
@@ -213,10 +214,10 @@ bool TestStability::pointInConvexHull(const tf::Point& point, const std::vector<
   return true;
 }
 
-void TestStability::initFootPolygon(double scale_convex_hull){
+void TestStability::initFootPolygon(double foot_polygon_scale){
   
   //Init convex hull scaling factor
-  scale_convex_hull_ = scale_convex_hull;
+  foot_polygon_scale_ = foot_polygon_scale;
 
   // TODO: param?
   if (!loadFootPolygon()){
@@ -240,6 +241,9 @@ void TestStability::initFootPolygon(double scale_convex_hull){
 
 
 bool TestStability::loadFootPolygon(){
+
+  ROS_ERROR_STREAM_NAMED("temp","Loading foot polygon with scaling factor " << foot_polygon_scale_);
+
   boost::shared_ptr<const urdf::Link> foot_link =  urdf_model_->getLink(rfoot_mesh_link_name_);
   assert(foot_link);
   boost::shared_ptr<const urdf::Geometry> geom;
@@ -300,8 +304,8 @@ bool TestStability::loadFootPolygon(){
     tf::Point foot_point;
     for (unsigned int i = 0 ; i < foot_SP_right.size(); ++i){
       //Express point w.r.t foot center and directly apply scaling
-      foot_point.setX( (foot_SP_right[i].x() - r_foot_center.x()) * scale_convex_hull_ );
-      foot_point.setY( (foot_SP_right[i].y() - r_foot_center.y()) * scale_convex_hull_ );
+      foot_point.setX( (foot_SP_right[i].x() - r_foot_center.x()) * foot_polygon_scale_ );
+      foot_point.setY( (foot_SP_right[i].y() - r_foot_center.y()) * foot_polygon_scale_ );
       foot_SP_right_center.push_back(foot_point);
     }
 
