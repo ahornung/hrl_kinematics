@@ -241,9 +241,6 @@ void TestStability::initFootPolygon(double foot_polygon_scale){
 
 
 bool TestStability::loadFootPolygon(){
-
-  ROS_ERROR_STREAM_NAMED("temp","Loading foot polygon with scaling factor " << foot_polygon_scale_);
-
   boost::shared_ptr<const urdf::Link> foot_link =  urdf_model_->getLink(rfoot_mesh_link_name_);
   assert(foot_link);
   boost::shared_ptr<const urdf::Geometry> geom;
